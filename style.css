@@ -1,0 +1,14 @@
+body{font-family:Arial;background:#f3f6fb;margin:0}
+.wrap{max-width:1400px;margin:auto;padding:20px}
+.card{background:#fff;padding:16px;margin-bottom:12px;border-radius:12px}
+
+.controls{display:flex;gap:10px;flex-wrap:wrap}
+
+table{width:100%;border-collapse:collapse}
+th{background:#0ea5e9;color:#fff;padding:8px}
+td{padding:8px;border-bottom:1px solid #eee}
+
+button{
+  background:#2563eb;color:#fff;border:none;
+  padding:8px;border-radius:8px;cursor:pointer;
+}

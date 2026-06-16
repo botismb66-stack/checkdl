@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Kiểm tra nghi vấn đại lý</title>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<link rel="stylesheet" href="style.css"/>
+</head>
+
+<body>
+
+<div class="wrap">
+
+  <div class="card">
+    <h1>Kiểm tra tài khoản nghi vấn theo đại lý</h1>
+
+    <div class="controls">
+      <input type="file" id="fileInput"/>
+      <input type="file" id="gameFileInput"/>
+
+      <button onclick="handleFile()">Phân tích</button>
+      <button onclick="exportResult()">Export tổng</button>
+      <button onclick="exportGroups()">Export chi tiết</button>
+
+      <input id="searchBox" placeholder="Tìm..." oninput="render()"/>
+
+      <select id="riskFilter" onchange="render()">
+        <option value="">Tất cả</option>
+        <option value="Cao">Cao</option>
+        <option value="Theo dõi">Theo dõi</option>
+        <option value="Thấp">Thấp</option>
+      </select>
+
+      <select id="sortMode" onchange="render()">
+        <option value="default">Mặc định</option>
+        <option value="count_desc">TK giảm</option>
+        <option value="deposit_desc">Nạp giảm</option>
+        <option value="risk_desc">Rủi ro</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card">
+    <table id="resultTable">
+      <thead>
+        <tr>
+          <th>Đại lý</th>
+          <th>Dấu hiệu</th>
+          <th>Giá trị</th>
+          <th>TK nghi vấn / Tổng TK</th>
+          <th>Tổng nạp</th>
+          <th>Rủi ro</th>
+          <th>Xem</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
