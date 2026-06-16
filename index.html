@@ -1,66 +1,68 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Kiểm tra nghi vấn đại lý</title>
-
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<link rel="stylesheet" href="style.css"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kiểm tra tài khoản nghi vấn theo đại lý</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
-
 <div class="wrap">
-
   <div class="card">
-    <h1>Kiểm tra tài khoản nghi vấn theo đại lý</h1>
-
+    <h1>MB66 - Kiểm tra tài khoản nghi vấn theo đại lý</h1>
+    <div class="sub">Chỉ kiểm tra tài khoản có <b>Tổng nạp &gt; 0</b>, và chỉ đối chiếu các tài khoản trong cùng một đại lý. Sảnh cược chỉ hiển thị khi bấm <b>Xem</b> chi tiết.</div>
     <div class="controls">
-      <input type="file" id="fileInput"/>
-      <input type="file" id="gameFileInput"/>
-
+      <div class="filebox"><label>File đại lý</label><input type="file" id="fileInput" accept=".xlsx,.xls,.csv" /></div>
+      <div class="filebox"><label>File cược game</label><input type="file" id="gameFileInput" accept=".xlsx,.xls,.csv" /></div>
       <button onclick="handleFile()">Phân tích</button>
-      <button onclick="exportResult()">Export tổng</button>
-      <button onclick="exportGroups()">Export chi tiết</button>
-
-      <input id="searchBox" placeholder="Tìm..." oninput="render()"/>
-
+      <button class="secondary" onclick="exportResult()">Xuất Excel kết quả</button>
+      <button class="gray" onclick="exportGroups()">Xuất nhóm chi tiết</button>
+      <input id="searchBox" placeholder="Tìm đại lý / hội viên / IP / tên..." oninput="render()" />
       <select id="riskFilter" onchange="render()">
-        <option value="">Tất cả</option>
-        <option value="Cao">Cao</option>
+        <option value="">Tất cả mức rủi ro</option>
+        <option value="Cao">Rủi ro cao</option>
         <option value="Theo dõi">Theo dõi</option>
         <option value="Thấp">Thấp</option>
       </select>
-
-      <select id="sortMode" onchange="render()">
-        <option value="default">Mặc định</option>
-        <option value="count_desc">TK giảm</option>
-        <option value="deposit_desc">Nạp giảm</option>
-        <option value="risk_desc">Rủi ro</option>
+      <div class="filebox"><label>Số TK thấp nhất</label><input class="numfilter" type="number" id="minCount" min="2" value="2" oninput="render()" /></div>
+      <div class="filebox"><label>Số TK cao nhất</label><input class="numfilter" type="number" id="maxCount" min="2" placeholder="Không giới hạn" oninput="render()" /></div>
+      <button class="gray" onclick="setSortMode('count_asc')">Xếp số TK thấp nhất</button>
+      <button class="gray" onclick="setSortMode('count_desc')">Xếp số TK cao nhất</button>
+      <select id="sortMode" class="sortselect" onchange="render()">
+        <option value="default">Xếp hạng mặc định</option>
+        <option value="count_desc">Số TK cao → thấp</option>
+        <option value="count_asc">Số TK thấp → cao</option>
+        <option value="deposit_desc">Tổng nạp cao → thấp</option>
+        <option value="deposit_asc">Tổng nạp thấp → cao</option>
+        <option value="risk_desc">Rủi ro cao → thấp</option>
       </select>
+    </div>
+    <div class="warn small">
+      File đại lý: A = hội viên, B = thời gian đăng ký, C = họ tên, D = đại lý cấp trên, F = tổng nạp, G = IP đăng nhập lần cuối, H = thời gian nạp cuối, I = ngân hàng, J = chi nhánh ngân hàng.<br>
+      File cược game: C = đại lý cấp trên, D = hội viên, E = sảnh game, H = tổng cược hợp lệ của sảnh game đó.<br>Cột TK nghi vấn / Tổng TK hiển thị số tài khoản nghi vấn trong nhóm so với tổng tài khoản có nạp của đại lý. Đăng ký sớm nhất, nạp cuối gần nhất và khoảng cách ngày chỉ hiển thị trong phần Xem chi tiết.
     </div>
   </div>
 
-  <div class="card">
-    <table id="resultTable">
-      <thead>
-        <tr>
-          <th>Đại lý</th>
-          <th>Dấu hiệu</th>
-          <th>Giá trị</th>
-          <th>TK nghi vấn / Tổng TK</th>
-          <th>Tổng nạp</th>
-          <th>Rủi ro</th>
-          <th>Xem</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+  <div class="grid">
+    <div class="box"><div>Tài khoản có nạp</div><div id="stAccounts" class="num">0</div></div>
+    <div class="box"><div>Đại lý có dữ liệu</div><div id="stAgents" class="num">0</div></div>
+    <div class="box"><div>Nhóm nghi vấn</div><div id="stGroups" class="num">0</div></div>
+    <div class="box"><div>Nhóm rủi ro cao</div><div id="stHigh" class="num">0</div></div>
   </div>
 
+  <div class="card">
+    <h2>Danh sách nhóm nghi vấn</h2>
+    <div class="tablebox">
+      <table id="resultTable">
+        <thead><tr>
+          <th>Đại lý</th><th>Dấu hiệu</th><th>Giá trị trùng/tương đồng</th><th class="right">TK nghi vấn / Tổng TK</th><th class="right">Tổng nạp</th><th>Mức rủi ro</th><th>Chi tiết</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
 </div>
-
 <script src="app.js"></script>
 </body>
 </html>
