@@ -1,14 +1,77 @@
-body{font-family:Arial;background:#f3f6fb;margin:0}
-.wrap{max-width:1400px;margin:auto;padding:20px}
-.card{background:#fff;padding:16px;margin-bottom:12px;border-radius:12px}
+table{
+    width:100%;
+    border-collapse:collapse;
+    table-layout:fixed; /* ép cột đều */
+    font-size:13px;
+}
 
-.controls{display:flex;gap:10px;flex-wrap:wrap}
+th,
+td{
+    border-bottom:1px solid #e5e7eb;
 
-table{width:100%;border-collapse:collapse}
-th{background:#0ea5e9;color:#fff;padding:8px}
-td{padding:8px;border-bottom:1px solid #eee}
+    padding:10px 12px;
 
-button{
-  background:#2563eb;color:#fff;border:none;
-  padding:8px;border-radius:8px;cursor:pointer;
+    vertical-align:middle; /* căn giữa theo chiều dọc */
+
+    text-align:center; /* căn giữa ngang */
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+}
+
+th{
+    background:#0ea5e9;
+
+    color:#fff;
+
+    font-weight:600;
+
+    position:sticky;
+
+    top:0;
+}
+
+/* chỉnh độ rộng từng cột */
+
+th:nth-child(1),
+td:nth-child(1){
+    width:18%;
+}
+
+th:nth-child(2),
+td:nth-child(2){
+    width:18%;
+}
+
+th:nth-child(3),
+td:nth-child(3){
+    width:18%;
+}
+
+th:nth-child(4),
+td:nth-child(4){
+    width:15%;
+}
+
+th:nth-child(5),
+td:nth-child(5){
+    width:12%;
+}
+
+th:nth-child(6),
+td:nth-child(6){
+    width:10%;
+}
+
+th:nth-child(7),
+td:nth-child(7){
+    width:9%;
+}
+
+/* số căn phải nhìn đẹp hơn */
+.right{
+    text-align:right !important;
 }
